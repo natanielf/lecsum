@@ -1,0 +1,3 @@
+whisper_model: "base.en"
+ollama_model: "llama3.1:8b"
+prompt: "Summarize: "
