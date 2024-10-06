@@ -22,12 +22,15 @@ CONFIG_FILE_PATHS = [
 # Parse command-line arguments
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        prog="lecsum",
         description="Automatically transcribe and summarize lecture recordings.",
     )
-    parser.add_argument("file", help="name of an audio file")
-    parser.add_argument("-c", "--config", help="'lecsum.yaml' configuration file")
-
+    parser.add_argument("file", help="name of an audio file", type=str)
+    parser.add_argument(
+        "-c",
+        "--config",
+        help=f"'{CONFIG_FILE}' configuration file",
+        type=str,
+    )
     return parser.parse_args()
 
 
