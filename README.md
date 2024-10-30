@@ -45,7 +45,7 @@ ollama serve
 In a new terminal, run:
 
 ```sh
-./lecsum.py [-h] [-c CONFIG] file
+./lecsum.py -c [CONFIG_FILE] [AUDIO_FILE]
 ```
 
 ## References
