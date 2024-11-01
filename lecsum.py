@@ -7,9 +7,11 @@ import warnings
 import yaml
 
 # Default configuration
-DEFAULT_WHISPER_MODEL = "base.en"
-DEFAULT_OLLAMA_MODEL = "llama3.1:8b"
-DEFAULT_PROMPT = "Summarize: "
+DEFAULT_CONFIG = {
+    "whisper_model": "base.en",
+    "ollama_model": "llama3.1:8b",
+    "prompt": "Summarize: ",
+}
 
 # Common paths that may contain a configuration file
 CONFIG_FILE = "lecsum.yaml"
@@ -36,13 +38,6 @@ def parse_args() -> argparse.Namespace:
 
 # Parse YAML config file
 def load_config(path: str = None) -> dict:
-    # Default configuration
-    default = {
-        "whisper_model": DEFAULT_WHISPER_MODEL,
-        "ollama_model": DEFAULT_OLLAMA_MODEL,
-        "prompt": DEFAULT_PROMPT,
-    }
-
     # Parse a yaml file, immediately exiting if any errors are found
     def load_yaml_file(path: Path = None) -> dict:
         try:
@@ -66,7 +61,7 @@ def load_config(path: str = None) -> dict:
             return load_yaml_file(p)
 
     # Use the default configuration if a config file cannot be found
-    return default
+    return DEFAULT_CONFIG
 
 
 def main():
@@ -89,6 +84,11 @@ def main():
     # Only import modules if the configuration is valid
     from modules.transcribe import transcribe
     from modules.summarize import summarize
+    from modules.utils import check_whisper_config, check_ollama_config
+
+    # Ensure the configuration is valid
+    check_whisper_config(config["whisper_model"])
+    check_ollama_config(config["ollama_model"])
 
     # Transcribe the audio file
     transcript = transcribe(model_name=config["whisper_model"], audio_file=args.file)
