@@ -27,14 +27,10 @@ async def create_summary(config: Config, response: Response):
         print(f"Error: Audio file '{path}' cannot be opened.")
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"message": f"Error: Audio file '{path}' cannot be opened."}
-    transcript, summary = transcribe_and_summarize(
+    _, summary = transcribe_and_summarize(
         whisper_model=config.whisper_model,
         ollama_model=config.ollama_model,
         prompt=config.prompt,
         file=config.file,
     )
-    # transcript = transcribe(model_name=config.whisper_model, audio_file=config.filename)
-    # summary = summarize(
-    #     model_name=config.ollama_model, prompt=config.prompt, text=transcript
-    # )
     return {"message": summary}
