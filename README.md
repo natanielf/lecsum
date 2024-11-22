@@ -50,6 +50,8 @@ In a new terminal, run:
 ./lecsum.py -c [CONFIG_FILE] [AUDIO_FILE]
 ```
 
+Use any file format supported by [Whisper](https://platform.openai.com/docs/guides/speech-to-text) (`mp3`, `mp4`, `wav`, `webm`, etc.).
+
 ### Server
 
 To start the `lecsum` server in a development environment, run:
