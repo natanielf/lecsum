@@ -1,4 +1,4 @@
-venv/
+.venv/
 __pycache__/
 modules/__pycache__/
 test/

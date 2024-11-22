@@ -9,13 +9,13 @@ Install [Ollama](https://ollama.com/download).
 Create a virtual Python environment:
 
 ```sh
-python3 -m venv venv
+python3 -m venv .venv
 ```
 
 Activate the virtual environment:
 
 ```sh
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 Install dependencies:
