@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 import httpx
 import ollama
@@ -25,3 +26,13 @@ def check_ollama_config(ollama_model: str) -> None:
     except httpx.ConnectError:
         print("Error: Ollama is not running. Run the server with `ollama serve`.")
         sys.exit(1)
+
+
+def check_config(whisper_model: str, ollama_model: str) -> None:
+    check_whisper_config(whisper_model)
+    check_ollama_config(ollama_model)
+
+
+def write(path: Path, text: str) -> None:
+    with open(path, "w") as f:
+        f.write(text)

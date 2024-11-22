@@ -4,7 +4,12 @@ import argparse
 from pathlib import Path
 import sys
 import warnings
+
 import yaml
+
+from modules.transcribe import transcribe
+from modules.summarize import summarize
+from modules.utils import check_config, write
 
 # Default configuration
 DEFAULT_CONFIG = {
@@ -49,7 +54,7 @@ def load_config(path: str = None) -> dict:
     # Default to path passed via command-line
     if path:
         p = Path(path)
-        if p.exists() and p.is_file():
+        if p.is_file():
             return load_yaml_file(p)
         else:
             print(f"Error: Configuration file '{p}' cannot be opened.")
@@ -57,11 +62,32 @@ def load_config(path: str = None) -> dict:
 
     # If a config file is not specified, check a couple default locations
     for p in CONFIG_FILE_PATHS:
-        if p.exists() and p.is_file():
+        if p.is_file():
             return load_yaml_file(p)
 
     # Use the default configuration if a config file cannot be found
     return DEFAULT_CONFIG
+
+
+def transcribe_and_summarize(
+    whisper_model: str, ollama_model: str, prompt: str, file: str
+) -> tuple[str, str]:
+    path = Path(file)
+    filename = path.stem
+    parent = path.resolve().parent
+    # Transcribe the audio file
+    transcript = transcribe(model_name=whisper_model, audio_file=file)
+
+    # Write the transcript to a text file
+    write(path=parent.joinpath(f"{filename}_transcript.txt"), text=transcript)
+
+    # Summarize the transcription
+    summary = summarize(model_name=ollama_model, prompt=prompt, text=transcript)
+
+    # Write the summary to a text file
+    write(path=parent.joinpath(f"{filename}_summary.txt"), text=summary)
+
+    return (transcript, summary)
 
 
 def main():
@@ -74,37 +100,21 @@ def main():
     config = load_config(args.config)
     # Path to audio file
     path = Path(args.file)
-    if not (path.exists() and path.is_file()):
+    if not path.is_file():
         print(f"Error: Audio file '{path}' cannot be opened.")
         sys.exit(1)
 
-    file = path.stem
-    parent = path.resolve().parent
-
-    # Only import modules if the configuration is valid
-    from modules.transcribe import transcribe
-    from modules.summarize import summarize
-    from modules.utils import check_whisper_config, check_ollama_config
-
     # Ensure the configuration is valid
-    check_whisper_config(config["whisper_model"])
-    check_ollama_config(config["ollama_model"])
-
-    # Transcribe the audio file
-    transcript = transcribe(model_name=config["whisper_model"], audio_file=args.file)
-
-    # Write the transcript to a text file
-    with open(parent.joinpath(f"{file}_transcript.txt"), "w") as f:
-        f.write(transcript)
-
-    # Summarize the transcription
-    summary = summarize(
-        model_name=config["ollama_model"], prompt=config["prompt"], text=transcript
+    check_config(
+        whisper_model=config["whisper_model"], ollama_model=config["ollama_model"]
     )
 
-    # Write the summary to a text file
-    with open(parent.joinpath(f"{file}_summary.txt"), "w") as f:
-        f.write(summary)
+    transcribe_and_summarize(
+        whisper_model=config["whisper_model"],
+        ollama_model=config["ollama_model"],
+        prompt=config["prompt"],
+        file=args.file,
+    )
 
 
 if __name__ == "__main__":

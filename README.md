@@ -34,7 +34,7 @@ Edit `lecsum.yaml`:
 | `ollama_model`  | "llama3.1:8b"     | [Ollama model name](https://ollama.com/library)                                        | Specifies which Ollama model to use for summarization            |
 | `prompt`        | "Summarize: "     | Any string                                                                             | Instructs the large language model during the summarization step |
 
-## Run
+## Usage
 
 Run the Ollama server:
 
@@ -42,10 +42,20 @@ Run the Ollama server:
 ollama serve
 ```
 
+### Command-line
+
 In a new terminal, run:
 
 ```sh
 ./lecsum.py -c [CONFIG_FILE] [AUDIO_FILE]
+```
+
+### Server
+
+To start the `lecsum` server in a development environment, run:
+
+```sh
+fastapi dev server.py
 ```
 
 ## References
@@ -53,3 +63,4 @@ In a new terminal, run:
 - https://pyyaml.org/wiki/PyYAMLDocumentation
 - https://github.com/openai/whisper
 - https://github.com/ollama/ollama-python
+- https://fastapi.tiangolo.com
