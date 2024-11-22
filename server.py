@@ -4,9 +4,7 @@ from fastapi import FastAPI, Response, status
 from pydantic import BaseModel
 
 from lecsum import DEFAULT_CONFIG, transcribe_and_summarize
-from modules.transcribe import transcribe
-from modules.summarize import summarize
-from modules.utils import check_config, write
+from modules.utils import check_config
 
 app = FastAPI()
 
