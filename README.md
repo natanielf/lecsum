@@ -60,6 +60,14 @@ To start the `lecsum` server in a development environment, run:
 fastapi dev server.py
 ```
 
+### Testing
+
+Automated testing is performed using the `pytest` framework:
+
+```sh
+pytest
+```
+
 ## References
 
 - https://pyyaml.org/wiki/PyYAMLDocumentation
