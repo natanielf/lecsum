@@ -42,14 +42,14 @@ def parse_args() -> argparse.Namespace:
 
 
 # Parse YAML config file
-def load_config(path: str = None) -> dict:
-    # Parse a yaml file, immediately exiting if any errors are found
-    def load_yaml_file(path: Path = None) -> dict:
+def load_config(path: str) -> dict | None:
+    # Parse a yaml file
+    def load_yaml_file(path: Path) -> dict | None:
         try:
             return yaml.load(open(path, "r").read(), Loader=yaml.Loader)
         except yaml.YAMLError as e:
             print(f"Error in configuration file '{path}': {e}")
-            sys.exit(1)
+            return
 
     # Default to path passed via command-line
     if path:
@@ -58,7 +58,7 @@ def load_config(path: str = None) -> dict:
             return load_yaml_file(p)
         else:
             print(f"Error: Configuration file '{p}' cannot be opened.")
-            sys.exit(1)
+            return
 
     # If a config file is not specified, check a couple default locations
     for p in CONFIG_FILE_PATHS:
@@ -98,6 +98,9 @@ def main():
     args = parse_args()
     # Parse configuration file
     config = load_config(args.config)
+    # Exit if an error is found in the config file
+    if not config:
+        sys.exit(1)
     # Path to audio file
     path = Path(args.file)
     if not path.is_file():
@@ -109,6 +112,7 @@ def main():
         whisper_model=config["whisper_model"], ollama_model=config["ollama_model"]
     )
 
+    # Transcribe and summarize the audio file
     transcribe_and_summarize(
         whisper_model=config["whisper_model"],
         ollama_model=config["ollama_model"],
